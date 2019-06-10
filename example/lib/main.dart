@@ -16,13 +16,23 @@ import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
 import 'package:flutter/material.dart';
 
+import 'package:oktoast/oktoast.dart';
+
+import 'index.dart';
+
 void main() {
   // See https://github.com/flutter/flutter/wiki/Desktop-shells#target-platform-override
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
 
-  runApp(new MyApp());
+  runApp(
+    OKToast(
+      position: ToastPosition(align: Alignment.topCenter, offset: -50),
+      child: new MyApp(),
+    ),
+  );
 }
 
+///
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -32,15 +42,19 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         // See https://github.com/flutter/flutter/wiki/Desktop-shells#fonts
         fontFamily: 'Roboto',
+        platform: TargetPlatform.iOS,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: IndexPage(),
     );
   }
 }
 
+///
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  ///
+  const MyHomePage({Key key, this.title}) : super(key: key);
 
+  ///
   final String title;
 
   @override
@@ -50,10 +64,38 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  TextEditingController ctl = TextEditingController();
+  ToastFuture future;
+
   void _incrementCounter() {
     setState(() {
       _counter++;
     });
+    ctl.text = _counter.toString();
+    final offset = _counter.toString().length;
+    final textSelection =
+        TextSelection(baseOffset: offset, extentOffset: offset);
+    ctl.selection = textSelection;
+    future = showToast('当前数字: $_counter', duration: Duration(seconds: 5));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    ctl.addListener(() {
+      final i = int.tryParse(ctl.text);
+      if (i != null) {
+        setState(() {
+          _counter = i;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    ctl.dispose();
+    super.dispose();
   }
 
   @override
@@ -61,6 +103,14 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('关闭'),
+            onPressed: () {
+              future?.dismiss(showAnim: true);
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(
@@ -72,6 +122,18 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.display1,
+            ),
+            Container(
+              child: Text('我是一个文本'),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1,
+                  style: BorderStyle.solid,
+                ),
+              ),
+            ),
+            TextField(
+              controller: ctl,
             ),
           ],
         ),

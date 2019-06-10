@@ -13,7 +13,11 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^0.1.0
+  oktoast:
+    path: /Users/cai/Documents/GitHub/flutter_oktoast
 
+  file_chooser:
+    path: ../plugins/file_chooser
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -37,3 +41,6 @@ flutter:
           weight: 700
         - asset: fonts/Roboto/Roboto-Black.ttf
           weight: 900
+
+  assets:
+    - assets/

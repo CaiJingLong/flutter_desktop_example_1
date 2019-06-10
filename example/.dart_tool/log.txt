@@ -1,0 +1,6 @@
+2019-06-10 15:43:54.042289  : allImageList = []
+2019-06-10 15:43:54.046829  : start write code
+2019-06-10 15:43:54.061344  : end write code
+2019-06-10 15:44:30.229381  : allImageList = [assets/1.png]
+2019-06-10 15:44:30.236714  : start write code
+2019-06-10 15:44:30.255058  : end write code
